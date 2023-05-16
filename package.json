@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src",
-    "build": "tsc",
+    "start": "nodemon src/index.ts",
+    "build": "rimraf dist & tsc",
     "lint": "eslint src --ext .ts --quiet",
     "lint:fix": "eslint src --ext .ts --fix --quiet"
   },
@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/node": "^20.1.5",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "eslint": "^8.40.0",
@@ -23,8 +24,10 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "prisma": "^4.14.0",
+    "rimraf": "^5.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
