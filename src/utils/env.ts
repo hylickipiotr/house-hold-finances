@@ -66,4 +66,4 @@ export const getEnvBoolean = (
   options?: GetEnvOptions<boolean, EnvParser<boolean>>
 ): boolean => getEnv(name, { ...options, parser: booleanParser });
 
-export const getPort = getEnvNumber.bind(null, 'PORT', { defaultValue: 3000 });
+export const getPort = getEnvNumber.bind(null, 'PORT', { defaultValue: 5000 });

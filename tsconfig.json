@@ -13,5 +13,5 @@
           "*": ["node_modules/*", "src/types/*"]
       }
   },
-  "include": ["./src/**/*", ".eslintrc.cjs", ".prettierrc.cjs"]
+  "include": ["api", "src", ".eslintrc.cjs", ".prettierrc.cjs"]
 }
