@@ -7,7 +7,8 @@
     "start": "nodemon",
     "build": "rimraf dist & tsc",
     "lint": "eslint src --ext .ts --quiet",
-    "lint:fix": "eslint src --ext .ts --fix --quiet"
+    "lint:fix": "eslint src --ext .ts --fix --quiet",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
