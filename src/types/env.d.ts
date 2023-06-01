@@ -8,6 +8,7 @@ declare global {
       JWKS_URI: string;
       AUDIENCE: string;
       ISSUER: string;
+      SUPABASE_SECRET: string;
     }
   }
 }

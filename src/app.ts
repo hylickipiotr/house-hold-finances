@@ -1,13 +1,14 @@
-import 'reflect-metadata';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import morgan from 'morgan';
+import 'reflect-metadata';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
-import cors from 'cors';
-import morgan from 'morgan';
 import TransactionsController from './controllers/TransactionsController';
 import Prisma from './database/prisma';
-import validateJwt from './helpers/jwtValidator';
+import authorizationChecker from './utils/auth/auth-checker';
+import currentUserChecker from './utils/auth/user-checker';
 import ErrorMiddleware from './middlewares/ErrorHandler';
 
 dotenv.config();
@@ -28,37 +29,8 @@ useExpressServer(app, {
   defaultErrorHandler: false,
   middlewares: [ErrorMiddleware],
   controllers: [TransactionsController],
-  async currentUserChecker(action) {
-    if (process.env.NODE_ENV === 'development') {
-      const currentUser = process.env.CURRENT_USER;
-      if (currentUser) {
-        return { sub: currentUser };
-      }
-    }
-
-    try {
-      return await validateJwt(action.request.headers.authorization);
-    } catch (err) {
-      return null;
-    }
-  },
-  async authorizationChecker(action) {
-    if (process.env.NODE_ENV === 'development') {
-      const currentUser = process.env.CURRENT_USER;
-      if (currentUser) {
-        return true;
-      }
-    }
-
-    try {
-      const decodedJwt = await validateJwt(
-        action.request.headers.authorization
-      );
-      return !!decodedJwt;
-    } catch (err) {
-      return false;
-    }
-  },
+  currentUserChecker,
+  authorizationChecker,
 });
 
 export default app;

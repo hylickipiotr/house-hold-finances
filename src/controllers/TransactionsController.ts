@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import {
   Authorized,
   Body,
@@ -9,14 +9,13 @@ import {
   Post,
   Put,
   Req,
-  Res,
 } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
-import { Transaction } from '@prisma/client';
+import CreateTransactionDto from '../dtos/CreateTransactionDto';
+import { TransactionDto } from '../dtos/TransactionDto';
+import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 import TransactionsService from '../services/TransactionsService';
 import { User } from '../utils/types';
-import CreateTransactionDto from '../dtos/CreateTransactionDto';
-import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 
 @JsonController('/transactions')
 @Service()
@@ -26,7 +25,7 @@ export default class TransactionsController {
 
   @Authorized()
   @Get('/')
-  public async getAll(): Promise<Transaction[]> {
+  public async getAll(): Promise<TransactionDto[]> {
     return this.transactionsService.getAll();
   }
 
@@ -35,7 +34,7 @@ export default class TransactionsController {
   public async getById(
     @CurrentUser() currentUser: User,
     @Req() req: Request
-  ): Promise<Transaction | null> {
+  ): Promise<TransactionDto | null> {
     return this.transactionsService.getById(Number(req.params.id));
   }
 
@@ -44,7 +43,7 @@ export default class TransactionsController {
   public async create(
     @CurrentUser() currentUser: User,
     @Body() transaction: CreateTransactionDto
-  ): Promise<Transaction> {
+  ): Promise<TransactionDto> {
     return this.transactionsService.create(transaction, currentUser.sub);
   }
 
@@ -54,7 +53,7 @@ export default class TransactionsController {
     @CurrentUser() currentUser: User,
     @Req() req: Request<{ id: number }>,
     @Body() transaction: UpdateTransactionDto
-  ): Promise<Transaction | null> {
+  ): Promise<TransactionDto | null> {
     return this.transactionsService.update(
       Number(req.params.id),
       transaction,

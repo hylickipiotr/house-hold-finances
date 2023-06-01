@@ -25,6 +25,7 @@ export default class TransactionsRepository {
     return this.prisma.transaction.create({
       data: {
         ...transaction,
+        date: new Date(transaction.date),
         createdBy: userId,
         updatedBy: userId,
       },
