@@ -15,7 +15,6 @@ async function authorizationChecker(action: Action): Promise<boolean> {
     const emailWhitelist = process.env.EMAIL_WHITELIST?.split(' ');
     if ('email' in decodedJwt && emailWhitelist) {
       for (let i = 0; i < emailWhitelist.length; i += 1) {
-        console.log(emailWhitelist[i].trim(), decodedJwt.email);
         if (emailWhitelist[i].trim() === decodedJwt.email) {
           return true;
         }

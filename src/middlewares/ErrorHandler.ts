@@ -13,6 +13,6 @@ export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
     if (res.headersSent) {
       return;
     }
-    res.status(error.httpCode || 500).json(error);
+    res.status(error.httpCode || 500).json({ error });
   }
 }

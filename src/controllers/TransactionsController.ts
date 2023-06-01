@@ -15,7 +15,7 @@ import CreateTransactionDto from '../dtos/CreateTransactionDto';
 import { TransactionDto } from '../dtos/TransactionDto';
 import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 import TransactionsService from '../services/TransactionsService';
-import { User } from '../utils/types';
+import { ResponseWithData, User } from '../utils/types';
 
 @JsonController('/transactions')
 @Service()
@@ -25,8 +25,9 @@ export default class TransactionsController {
 
   @Authorized()
   @Get('/')
-  public async getAll(): Promise<TransactionDto[]> {
-    return this.transactionsService.getAll();
+  public async getAll(): Promise<ResponseWithData<TransactionDto[]>> {
+    const data = await this.transactionsService.getAll();
+    return { data };
   }
 
   @Authorized()
@@ -34,8 +35,9 @@ export default class TransactionsController {
   public async getById(
     @CurrentUser() currentUser: User,
     @Req() req: Request
-  ): Promise<TransactionDto | null> {
-    return this.transactionsService.getById(Number(req.params.id));
+  ): Promise<ResponseWithData<TransactionDto | null>> {
+    const data = await this.transactionsService.getById(Number(req.params.id));
+    return { data };
   }
 
   @Authorized()
@@ -43,8 +45,12 @@ export default class TransactionsController {
   public async create(
     @CurrentUser() currentUser: User,
     @Body() transaction: CreateTransactionDto
-  ): Promise<TransactionDto> {
-    return this.transactionsService.create(transaction, currentUser.sub);
+  ): Promise<ResponseWithData<TransactionDto>> {
+    const data = await this.transactionsService.create(
+      transaction,
+      currentUser.sub
+    );
+    return { data };
   }
 
   @Authorized()
@@ -53,17 +59,21 @@ export default class TransactionsController {
     @CurrentUser() currentUser: User,
     @Req() req: Request<{ id: number }>,
     @Body() transaction: UpdateTransactionDto
-  ): Promise<TransactionDto | null> {
-    return this.transactionsService.update(
+  ): Promise<ResponseWithData<TransactionDto | null>> {
+    const data = await this.transactionsService.update(
       Number(req.params.id),
       transaction,
       currentUser.sub
     );
+    return { data };
   }
 
   @Authorized()
   @Delete('/:id')
-  public async delete(@Req() req: Request<{ id: number }>): Promise<boolean> {
-    return this.transactionsService.delete(Number(req.params.id));
+  public async delete(
+    @Req() req: Request<{ id: number }>
+  ): Promise<ResponseWithData<boolean>> {
+    const data = await this.transactionsService.delete(Number(req.params.id));
+    return { data };
   }
 }
