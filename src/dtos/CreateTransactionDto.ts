@@ -31,5 +31,5 @@ export default class CreateTransactionDto {
   @IsISO8601({
     strict: true,
   })
-  date: Date;
+  date: string;
 }

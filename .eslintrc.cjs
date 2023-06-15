@@ -17,5 +17,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'prettier'],
-  rules: {},
+  rules: {
+    'no-underscore-dangle': 'off',
+  },
 };

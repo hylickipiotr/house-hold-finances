@@ -1,15 +1,45 @@
-import { PrismaClient, Transaction } from '@prisma/client';
+import { PrismaClient, Transaction, TransactionType } from '@prisma/client';
 import { Inject, Service } from 'typedi';
 import CreateTransactionDto from '../dtos/CreateTransactionDto';
 import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
+import { StatsDto } from '../dtos/StatsDto';
 
 @Service()
 export default class TransactionsRepository {
   @Inject('prisma')
   private readonly prisma!: PrismaClient;
 
-  public async getAll(): Promise<Transaction[]> {
-    return this.prisma.transaction.findMany();
+  public async getAll({
+    year,
+    month,
+    type,
+  }: {
+    year?: number;
+    month?: number;
+    type?: TransactionType;
+  } = {}): Promise<Transaction[]> {
+    return this.prisma.transaction.findMany({
+      orderBy: {
+        date: 'desc',
+      },
+      where: {
+        AND: [
+          typeof year === 'number' && typeof month === 'number'
+            ? {
+                date: {
+                  gte: new Date(`${year ?? 0}-${month ?? 0}-01`),
+                  lt: new Date(
+                    `${month === 12 ? year + 1 : year}-${
+                      month === 12 ? 1 : month + 1
+                    }-01`
+                  ),
+                },
+              }
+            : {},
+          type ? { type } : {},
+        ],
+      },
+    });
   }
 
   public async getById(id: number): Promise<Transaction | null> {
@@ -41,6 +71,7 @@ export default class TransactionsRepository {
       where: { id },
       data: {
         ...transaction,
+        date: new Date(transaction.date),
         updatedBy: userId,
       },
     });

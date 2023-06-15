@@ -8,14 +8,18 @@ import {
   JsonController,
   Post,
   Put,
+  QueryParam,
+  QueryParams,
   Req,
 } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
+import { TransactionType } from '@prisma/client';
 import CreateTransactionDto from '../dtos/CreateTransactionDto';
 import { TransactionDto } from '../dtos/TransactionDto';
 import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 import TransactionsService from '../services/TransactionsService';
 import { ResponseWithData, User } from '../utils/types';
+import { StatsDto } from '../dtos/StatsDto';
 
 @JsonController('/transactions')
 @Service()
@@ -25,8 +29,12 @@ export default class TransactionsController {
 
   @Authorized()
   @Get('/')
-  public async getAll(): Promise<ResponseWithData<TransactionDto[]>> {
-    const data = await this.transactionsService.getAll();
+  public async getAll(
+    @QueryParam('month', { type: Number }) month?: number,
+    @QueryParam('year', { type: Number }) year?: number,
+    @QueryParam('type') type?: TransactionType
+  ): Promise<ResponseWithData<TransactionDto[]>> {
+    const data = await this.transactionsService.getAll({ month, year, type });
     return { data };
   }
 

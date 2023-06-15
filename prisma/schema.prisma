@@ -12,8 +12,8 @@ datasource db {
 }
 
 enum TransactionType {
-  EXCOME @map("excome")
   INCOME @map("income")
+  EXPENSE @map("expense")
 
   @@map("transaction_type")
 }
@@ -23,7 +23,7 @@ model Transaction {
   title       String          @db.TinyText
   description String?         @db.Text
   amount      Decimal
-  type        TransactionType @default(EXCOME)
+  type        TransactionType @default(EXPENSE)
   date        DateTime        @default(now())
   updatedAt   DateTime        @updatedAt @map("updated_at")
   updatedBy   String

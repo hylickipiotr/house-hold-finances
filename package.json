@@ -8,7 +8,10 @@
     "build": "rimraf dist & tsc",
     "lint": "eslint src --ext .ts --quiet",
     "lint:fix": "eslint src --ext .ts --fix --quiet",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "prisma": "prisma"
   },
   "keywords": [],
   "author": "",
@@ -28,15 +31,17 @@
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "prisma": "^4.14.0",
+    "prisma": "^4.15.0",
     "rimraf": "^5.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "^0.32.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.14.1",
+    "@prisma/client": "^4.15.0",
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.8",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
