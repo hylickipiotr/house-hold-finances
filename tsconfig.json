@@ -9,7 +9,7 @@
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
-      "lib": ["esnext"],
+      "lib": ["esnext", "dom"],
       "outDir": "dist",
       
       "paths": {
