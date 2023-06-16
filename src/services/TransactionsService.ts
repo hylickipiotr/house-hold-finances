@@ -1,24 +1,11 @@
-import { Inject, Service } from 'typedi';
-import { Transaction, TransactionType } from '@prisma/client';
+import { TransactionType } from '@prisma/client';
 import { InternalServerError, NotFoundError } from 'routing-controllers';
-import TransactionsRepository from '../repositories/TransactionsRepository';
+import { Inject, Service } from 'typedi';
 import CreateTransactionDto from '../dtos/CreateTransactionDto';
-import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 import { TransactionDto } from '../dtos/TransactionDto';
-import { StatsDto } from '../dtos/StatsDto';
-
-const formatTransaction = (transaction: Transaction): TransactionDto => {
-  return {
-    id: transaction.id,
-    title: transaction.title,
-    date: transaction.date,
-    type: transaction.type,
-    description: transaction.description,
-    amount: transaction.amount.toNumber(),
-    createdAt: transaction.createdAt,
-    updatedAt: transaction.updatedAt,
-  };
-};
+import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
+import TransactionsRepository from '../repositories/TransactionsRepository';
+import { mapTransactionToDto } from '../utils/mappers/transactions';
 
 @Service()
 export default class TransactionsService {
@@ -39,7 +26,7 @@ export default class TransactionsService {
       month,
       type,
     });
-    return transactions.map(formatTransaction);
+    return transactions.map(mapTransactionToDto);
   }
 
   public async getById(id: number): Promise<TransactionDto | null> {
@@ -49,7 +36,7 @@ export default class TransactionsService {
       throw new NotFoundError('Transaction not found');
     }
 
-    return formatTransaction(transaction);
+    return mapTransactionToDto(transaction);
   }
 
   public async create(
@@ -61,7 +48,7 @@ export default class TransactionsService {
       userId
     );
 
-    return formatTransaction(createdTransaction);
+    return mapTransactionToDto(createdTransaction);
   }
 
   public async update(
@@ -80,7 +67,7 @@ export default class TransactionsService {
         throw new NotFoundError('Transaction not found');
       }
 
-      return formatTransaction(updatedTransaction);
+      return mapTransactionToDto(updatedTransaction);
     } catch (e) {
       throw new InternalServerError(e.message);
     }

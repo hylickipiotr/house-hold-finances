@@ -2,7 +2,6 @@ import { PrismaClient, Transaction, TransactionType } from '@prisma/client';
 import { Inject, Service } from 'typedi';
 import CreateTransactionDto from '../dtos/CreateTransactionDto';
 import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
-import { StatsDto } from '../dtos/StatsDto';
 
 @Service()
 export default class TransactionsRepository {
@@ -81,5 +80,23 @@ export default class TransactionsRepository {
     return this.prisma.transaction.delete({
       where: { id },
     });
+  }
+
+  public async createMany(
+    transactions: CreateTransactionDto[],
+    userId: string
+  ) {
+    return this.prisma.$transaction(
+      transactions.map((transaction) =>
+        this.prisma.transaction.create({
+          data: {
+            ...transaction,
+            date: new Date(transaction.date),
+            createdBy: userId,
+            updatedBy: userId,
+          },
+        })
+      )
+    );
   }
 }

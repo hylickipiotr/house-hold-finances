@@ -10,8 +10,8 @@ import Prisma from './database/prisma';
 import authorizationChecker from './utils/auth/auth-checker';
 import currentUserChecker from './utils/auth/user-checker';
 import ErrorMiddleware from './middlewares/ErrorHandler';
-import StatsRepository from './repositories/StatsRepository';
 import StatsController from './controllers/StatsController';
+import ImportController from './controllers/ImportController';
 
 dotenv.config();
 
@@ -28,9 +28,9 @@ app.use(morgan('dev'));
 useContainer(Container);
 
 useExpressServer(app, {
-  // defaultErrorHandler: false,
-  // middlewares: [ErrorMiddleware],
-  controllers: [TransactionsController, StatsController],
+  defaultErrorHandler: false,
+  middlewares: [ErrorMiddleware],
+  controllers: [TransactionsController, StatsController, ImportController],
   currentUserChecker,
   authorizationChecker,
 });
