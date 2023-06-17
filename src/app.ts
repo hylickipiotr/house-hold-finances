@@ -12,6 +12,7 @@ import currentUserChecker from './utils/auth/user-checker';
 import ErrorMiddleware from './middlewares/ErrorHandler';
 import StatsController from './controllers/StatsController';
 import ImportController from './controllers/ImportController';
+import UserController from './controllers/UserController';
 
 dotenv.config();
 
@@ -30,7 +31,12 @@ useContainer(Container);
 useExpressServer(app, {
   defaultErrorHandler: false,
   middlewares: [ErrorMiddleware],
-  controllers: [TransactionsController, StatsController, ImportController],
+  controllers: [
+    TransactionsController,
+    StatsController,
+    ImportController,
+    UserController,
+  ],
   currentUserChecker,
   authorizationChecker,
 });
