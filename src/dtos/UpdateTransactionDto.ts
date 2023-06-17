@@ -10,6 +10,10 @@ import {
 } from 'class-validator';
 
 export default class UpdateTransactionDto {
+  @IsNumber()
+  @IsOptional()
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   @IsOptional()

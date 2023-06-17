@@ -82,4 +82,34 @@ export default class TransactionsService {
 
     return true;
   }
+
+  public async createMany(
+    transactions: CreateTransactionDto[],
+    userId: string
+  ): Promise<TransactionDto[]> {
+    const createdTransactions = await this.transactionsRepository.createMany(
+      transactions,
+      userId
+    );
+
+    return createdTransactions.map(mapTransactionToDto);
+  }
+
+  public async updateMany(
+    transactions: UpdateTransactionDto[],
+    userId: string
+  ): Promise<TransactionDto[]> {
+    const updatedTransactions = await this.transactionsRepository.updateMany(
+      transactions,
+      userId
+    );
+
+    return updatedTransactions.map(mapTransactionToDto);
+  }
+
+  public async deleteMany(ids: number[]): Promise<boolean[]> {
+    const transactions = await this.transactionsRepository.deleteMany(ids);
+
+    return transactions.map(Boolean);
+  }
 }

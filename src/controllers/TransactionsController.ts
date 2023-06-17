@@ -1,3 +1,4 @@
+import { TransactionType } from '@prisma/client';
 import { Request } from 'express';
 import {
   Authorized,
@@ -9,17 +10,14 @@ import {
   Post,
   Put,
   QueryParam,
-  QueryParams,
   Req,
 } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
-import { TransactionType } from '@prisma/client';
 import CreateTransactionDto from '../dtos/CreateTransactionDto';
 import { TransactionDto } from '../dtos/TransactionDto';
 import UpdateTransactionDto from '../dtos/UpdateTransactionDto';
 import TransactionsService from '../services/TransactionsService';
 import { ResponseWithData, User } from '../utils/types';
-import { StatsDto } from '../dtos/StatsDto';
 
 @JsonController('/transactions')
 @Service()
@@ -82,6 +80,41 @@ export default class TransactionsController {
     @Req() req: Request<{ id: number }>
   ): Promise<ResponseWithData<boolean>> {
     const data = await this.transactionsService.delete(Number(req.params.id));
+    return { data };
+  }
+
+  @Authorized()
+  @Post('/batch')
+  public async createMany(
+    @CurrentUser() currentUser: User,
+    @Body() transactions: CreateTransactionDto[]
+  ): Promise<ResponseWithData<TransactionDto[]>> {
+    const data = await this.transactionsService.createMany(
+      transactions,
+      currentUser.sub
+    );
+    return { data };
+  }
+
+  @Authorized()
+  @Put('/batch')
+  public async updateMany(
+    @CurrentUser() currentUser: User,
+    @Body() transactions: UpdateTransactionDto[]
+  ): Promise<ResponseWithData<TransactionDto[]>> {
+    const data = await this.transactionsService.updateMany(
+      transactions,
+      currentUser.sub
+    );
+    return { data };
+  }
+
+  @Authorized()
+  @Delete('/batch')
+  public async deleteMany(
+    @Body() ids: number[]
+  ): Promise<ResponseWithData<boolean[]>> {
+    const data = await this.transactionsService.deleteMany(ids);
     return { data };
   }
 }

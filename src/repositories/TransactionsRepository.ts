@@ -99,4 +99,31 @@ export default class TransactionsRepository {
       )
     );
   }
+
+  public async updateMany(
+    transactions: UpdateTransactionDto[],
+    userId: string
+  ) {
+    return this.prisma.$transaction(
+      transactions.map((transaction) =>
+        this.prisma.transaction.update({
+          where: { id: transaction.id },
+          data: {
+            ...transaction,
+            updatedBy: userId,
+          },
+        })
+      )
+    );
+  }
+
+  public async deleteMany(ids: number[]) {
+    return this.prisma.$transaction(
+      ids.map((id) =>
+        this.prisma.transaction.delete({
+          where: { id },
+        })
+      )
+    );
+  }
 }
