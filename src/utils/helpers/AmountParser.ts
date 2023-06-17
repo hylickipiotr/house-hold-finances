@@ -1,5 +1,9 @@
 class AmountParser {
   public static parseFromSpreadsheet(raw: string): number {
+    if (raw == null || raw === '') {
+      return 0;
+    }
+
     const amount = parseFloat(
       raw
         .trim()

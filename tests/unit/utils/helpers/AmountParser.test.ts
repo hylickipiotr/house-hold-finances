@@ -58,6 +58,9 @@ describe('AmountParser', () => {
     ['0', 0],
     ['0zł', 0],
     ['2 640,68 zł', 2640.68],
+    ['', 0],
+    [null, 0],
+    [undefined, 0],
   ])('should parse %s to %d', (raw, expected) => {
     expect(AmountParser.parseFromSpreadsheet(raw)).toBe(expected);
   });
