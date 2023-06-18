@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+   previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -32,5 +33,7 @@ model Transaction {
 
   @@index([date])
   @@index([type])
+  @@fulltext([title])
+  @@fulltext([title, description])
   @@map("transactions")
 }
