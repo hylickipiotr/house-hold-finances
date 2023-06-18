@@ -126,4 +126,24 @@ export default class TransactionsRepository {
       )
     );
   }
+
+  public async searchTitles(search: string): Promise<string[]> {
+    const transactions = await this.prisma.transaction.groupBy({
+      by: ['title'],
+      where: {
+        AND: [search.trim() !== '' ? { title: { contains: search } } : {}],
+      },
+      _count: {
+        title: true,
+      },
+      orderBy: {
+        _count: {
+          title: 'desc',
+        },
+      },
+      take: 10,
+    });
+
+    return transactions.map((transaction) => transaction.title);
+  }
 }

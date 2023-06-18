@@ -13,6 +13,7 @@ import ErrorMiddleware from './middlewares/ErrorHandler';
 import StatsController from './controllers/StatsController';
 import ImportController from './controllers/ImportController';
 import UserController from './controllers/UserController';
+import AutocompleteController from './controllers/AutocompleteController';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ useExpressServer(app, {
     StatsController,
     ImportController,
     UserController,
+    AutocompleteController,
   ],
   currentUserChecker,
   authorizationChecker,
