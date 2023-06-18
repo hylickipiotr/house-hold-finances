@@ -131,7 +131,7 @@ export default class TransactionsRepository {
     const transactions = await this.prisma.transaction.groupBy({
       by: ['title'],
       where: {
-        AND: [search.trim() !== '' ? { title: { contains: search } } : {}],
+        AND: [search.trim() !== '' ? { title: { search } } : {}],
       },
       _count: {
         title: true,

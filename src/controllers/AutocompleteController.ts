@@ -20,7 +20,7 @@ export default class AutocompleteController {
     @QueryParam('query') query: string
   ): Promise<ResponseWithData<string[]>> {
     const data = await this.autocompleteService.autocompleteTransactionsTitle(
-      query
+      query || ''
     );
     return { data };
   }
