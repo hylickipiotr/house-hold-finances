@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-   previewFeatures = ["fullTextIndex", "fullTextSearch"]
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -36,4 +36,176 @@ model Transaction {
   @@fulltext([title])
   @@fulltext([title, description])
   @@map("transactions")
+}
+
+model EmcCity {
+  id   Int    @id
+  name String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  department EmcDepartment[]
+
+  @@map("emc_city")
+}
+
+model EmcDepartment {
+  id   Int
+  name String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  city   EmcCity @relation(fields: [cityId], references: [id])
+  cityId Int     @map("city_id")
+
+  departmentServiceType EmcServiceTypeDepartment[]
+
+  @@unique(fields: [id, cityId], name: "department_city")
+  @@index(fields: [id, cityId], name: "department_city")
+  @@index([cityId])
+  @@map("emc_department")
+}
+
+model EmcServiceType {
+  id                       Int     @id
+  name                     String
+  isOm                     Boolean @default(false) @map("is_om")
+  contactTypeFilterVisible Boolean @default(false) @map("contact_type_filter_visible")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  service               EmcService[]
+  departmentServiceType EmcServiceTypeDepartment[]
+
+  @@map("emc_service_type")
+}
+
+model EmcServiceTypeDepartment {
+  serviceType   EmcServiceType @relation(fields: [serviceTypeId], references: [id])
+  serviceTypeId Int            @map("service_type_id")
+
+  department   EmcDepartment @relation(fields: [departmentId, cityId], references: [id, cityId])
+  departmentId Int           @map("department_id")
+  cityId       Int           @map("city_id")
+
+  @@id(fields: [serviceTypeId, departmentId, cityId], name: "service_type_department_city")
+  @@index([serviceTypeId])
+  @@index([departmentId, cityId])
+  @@map("emc_service_type_department")
+}
+
+model EmcService {
+  id   Int
+  name String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  serviceType   EmcServiceType @relation(fields: [serviceTypeId], references: [id])
+  serviceTypeId Int            @map("service_type_id")
+
+  serviceDoctor EmcDoctorService[]
+
+  @@unique(fields: [id, serviceTypeId], name: "service_service_type")
+  @@index(fields: [id, serviceTypeId], name: "service_service_type")
+  @@index([serviceTypeId])
+  @@map("emc_service")
+}
+
+model EmcDoctor {
+  id      Int     @id
+  name    String
+  surname String? @default("")
+  title   String? @default("")
+
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  serviceDoctor EmcDoctorService[]
+
+  @@map("emc_doctor")
+}
+
+model EmcDoctorService {
+  service       EmcService @relation(fields: [serviceId, serviceTypeId], references: [id, serviceTypeId])
+  serviceId     Int        @map("service_id")
+  serviceTypeId Int        @map("service_type_id")
+
+  doctor   EmcDoctor @relation(fields: [doctorId], references: [id])
+  doctorId Int       @map("doctor_id")
+
+  @@id(fields: [serviceId, serviceTypeId, doctorId], name: "doctor_service_service_type")
+  @@index([serviceId, serviceTypeId])
+  @@index([doctorId])
+  @@map("emc_doctor_service")
+}
+
+enum EmcSearchJobStatus {
+  ENABLED  @map("enabled")
+  DISABLED @map("disabled")
+
+  @@map("emc_search_job_status")
+}
+
+model EmcSearchJob {
+  id     Int                @id() @default(autoincrement())
+  data   Json
+  status EmcSearchJobStatus @default(ENABLED)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("emc_search_job")
+}
+
+enum EmcSearchJobRunStatus {
+  RUNNING        @map("running")
+  SEARCH_SUCCESS @map("search_success")
+  SEARCH_ERROR   @map("search_error")
+  EMAIL_SENT     @map("email_sent")
+  EMAIL_ERROR    @map("email_error")
+
+  @@map("emc_search_job_run_status")
+}
+
+model EmcSearchJobRun {
+  id          Int                   @id @default(autoincrement())
+  run         Int
+  searchJobId Int                   @map("search_job_id")
+  status      EmcSearchJobRunStatus
+
+  createdAt                     DateTime                           @default(now()) @map("created_at")
+  searchJobRunSearchAppointment EmcSearchJobRunSearchAppointment[]
+
+  @@unique([run, searchJobId, status], name: "run_search_job")
+  @@index([searchJobId])
+  @@map("emc_search_job_run")
+}
+
+model EmcSearchAppointment {
+  id                Int      @id() @default(autoincrement())
+  date              DateTime @db.Date
+  day               Int      @db.TinyInt
+  doctor            String
+  departmentName    String   @map("department_name")
+  departmentAddress String   @map("department_address")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  searchJobRunAppointment EmcSearchJobRunSearchAppointment[]
+
+  @@map("emc_search_appointment")
+}
+
+model EmcSearchJobRunSearchAppointment {
+  searchAppointment   EmcSearchAppointment @relation(fields: [searchAppointmentId], references: [id])
+  searchAppointmentId Int                  @map("search_appointment_id")
+
+  searchJobRun   EmcSearchJobRun @relation(fields: [searchJobRunId], references: [id])
+  searchJobRunId Int             @map("search_job_run_id")
+
+  @@id(fields: [searchAppointmentId, searchJobRunId], name: "search_appointment_search_job_run")
+  @@map("emc_search_job_run_search_appointment")
 }

@@ -14,6 +14,7 @@ import StatsController from './controllers/StatsController';
 import ImportController from './controllers/ImportController';
 import UserController from './controllers/UserController';
 import AutocompleteController from './controllers/AutocompleteController';
+import EmcSearchJobsController from './controllers/etc/EmcSearchJobsController';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ useExpressServer(app, {
     ImportController,
     UserController,
     AutocompleteController,
+    EmcSearchJobsController,
   ],
   currentUserChecker,
   authorizationChecker,
